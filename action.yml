@@ -79,7 +79,7 @@ runs:
         echo "$GITHUB_WORKSPACE/.poetry/runtime/bin" >> "$GITHUB_PATH"
     - name: Cache $POETRY_HOME
       if: "${{ inputs.cache-poetry == 'true' }}"
-      uses: actions/cache@v4
+      uses: corca-ai/local-cache@v3
       with:
         # It's important to base this key on the full Python installed version
         # (i.e. 3.9.2) and not just a matrix version (i.e. 3.9).  We also want
@@ -87,6 +87,8 @@ runs:
         # if the requested plugins change.
         path: ".poetry/runtime"
         key: "poetry-home|v2|${{ runner.os }}|${{ env.PYTHON_VERSION }}|${{ env.POETRY_VERSION }}|${{ env.POETRY_PLUGIN_HASH }}|${{ inputs.cache-suffix }}"
+        base: ../.cache
+        clean-key: true
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
       uses: actions/cache@v4
@@ -97,6 +99,8 @@ runs:
         # if the requested plugins change.
         path: ".poetry/cache"
         key: "poetry-cache|v2|${{ runner.os }}|${{ env.PYTHON_VERSION }}|${{ env.POETRY_VERSION }}|${{ env.POETRY_PLUGIN_HASH }}|${{ hashFiles('**/poetry.lock') }}|${{ inputs.cache-suffix }}"
+        base: ../.cache
+        clean-key: true
     - name: Install Poetry
       shell: bash
       run: |
@@ -125,9 +129,11 @@ runs:
         "$GITHUB_ACTION_PATH/scripts/install-plugins.sh"
     - name: Cache Virtual Environment
       if: "${{ inputs.cache-venv == 'true' }}"
-      uses: actions/cache@v4
+      uses: corca-ai/local-cache@v3
       with:
         # It's important to base this key on the full Python installed version
         # (i.e. 3.9.2) and not just a matrix version (i.e. 3.9).
         path: ".venv"
         key: "poetry-venv|v2|${{ runner.os }}|${{ env.PYTHON_VERSION }}|${{ hashFiles('**/poetry.lock') }}|${{ inputs.cache-suffix }}"
+        base: ../.cache
+        clean-key: true
