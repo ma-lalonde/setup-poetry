@@ -91,7 +91,7 @@ runs:
         clean-key: true
     - name: Cache $POETRY_CACHE
       if: "${{ inputs.cache-poetry == 'true' }}"
-      uses: actions/cache@v4
+      uses: corca-ai/local-cache@v3
       with:
         # It's important to base this key on the full Python installed version
         # (i.e. 3.9.2) and not just a matrix version (i.e. 3.9).  We also want
